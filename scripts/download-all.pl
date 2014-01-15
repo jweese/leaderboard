@@ -41,15 +41,16 @@ my %urls;
 
 # read in the list of users and base URLs
 open URLs, $users or die "can't read users file $users";
-while (my $line = <URLs>) {
-  my @tokens = split('\|', $line);
-  next unless @tokens == 6;
+while (<URLs>) {
+	# ignore comments, which start with a '#'
+	s/#.*//;
+	s/^\s*$//;
+	next if /^$/;
+  my @tokens = split '\t';
+  next unless @tokens == 4;
   map { $_ =~ s/^\s+|\s+$//g; } @tokens;
-  my (undef,$name,$email,$handle,$base_url) = @tokens;
-  next if $name eq "Name";
-
+  my ($name,$email,$handle,$base_url) = @tokens;
   $handle =~ s/ //g;
-
   $base_url .= "/" unless $base_url =~ /\/$/;
   $urls{$handle} = $base_url;
 }
