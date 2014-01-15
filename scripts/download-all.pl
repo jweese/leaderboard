@@ -7,6 +7,7 @@ use POSIX qw/strftime/;
 use Scalar::Util qw/looks_like_number/;
 use Time::Local;
 use List::Util qw/max/;
+use Getopt::Long;
 
 # files to look for
 my @files = qw/assignment4.txt/;
@@ -23,15 +24,23 @@ my %due = (
 
 # always do score if true
 my $force_scoring = 0;
+my $verbose =  0;
+my $users;
+my $assignment_root;
 
-# verbose
-my $verbose = shift || 0;
+GetOptions (
+	'force' => \$force_scoring,
+	'verbose' => \$verbose,
+	'users=s' => \$users,
+	'root=s', => \$assignment_root);
+
+$assignment_root .= "/" unless $assignment_root =~ /\/$/;
 
 # storage
 my %urls;
 
 # read in the list of users and base URLs
-open URLs, "users.txt" or die "can't read users.txt file";
+open URLs, $users or die "can't read users file $users";
 while (my $line = <URLs>) {
   my @tokens = split('\|', $line);
   next unless @tokens == 6;
@@ -115,7 +124,7 @@ sub score {
   }
 }
 
-# recompute oracle score
+recompute oracle score
 my $total = 0.0;
 open CMD, "paste assignment2.txt/*/scores | head -n 48 |" or die;
 while (my $scores = <CMD>) {

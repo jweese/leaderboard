@@ -2,6 +2,7 @@
 
 LEADERBOARD=$HOME/leaderboard
 DATAROOT=$HOME/leaderboard/data
+ASSIGNMENTS="$LEADERBOARD"
 
 [[ -d "$DATAROOT" ]] || mkdir -p "$DATAROOT"
 if [[ ! -d "$DATAROOT" ]]; then
@@ -9,7 +10,9 @@ if [[ ! -d "$DATAROOT" ]]; then
 	exit 1
 fi
 
-"$LEADERBOARD"/scripts/download-all.pl
+"$LEADERBOARD"/scripts/download-all.pl \
+	--users "$LEADERBOARD"/users.txt \
+	--root "$ASSIGNMENTS"
 "$LEADERBOARD"/scripts/build-table.pl > "$LEADERBOARD"/leaderboard.js
 
 if [[ ! -e "$DATAROOT"/leaderboard.js ]]; then
