@@ -10,7 +10,7 @@ use List::Util qw/max/;
 use Getopt::Long;
 
 # files to look for
-my @files = qw/assignment0.txt/;
+my @files = ();
 
 # Due dates.  The format is (second, minute, hour, date, (month-1),
 # year).  Yes, you read that right: the month is given in months since
@@ -32,7 +32,8 @@ GetOptions (
 	'force' => \$force_scoring,
 	'verbose' => \$verbose,
 	'users=s' => \$users,
-	'root=s', => \$assignment_root);
+	'root=s' => \$assignment_root,
+	'file=s' => \@files);
 
 $assignment_root .= "/" unless $assignment_root =~ /\/$/;
 

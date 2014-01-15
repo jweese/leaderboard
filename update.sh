@@ -15,7 +15,8 @@ fi
 
 "$LEADERBOARD"/scripts/download-all.pl \
 	--users "$USERFILE" \
-	--root "$ASSIGNMENTS"
+	--root "$ASSIGNMENTS" \
+	--file "assignment${CURR_ASSIGNMENT}.txt"
 "$LEADERBOARD"/scripts/build-table.pl \
 	--users "$USERFILE" \
 	--root "$ASSIGNMENTS" \
