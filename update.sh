@@ -22,6 +22,8 @@ fi
 	--root "$ASSIGNMENTS" \
 	--assignment "$CURR_ASSIGNMENT" \
 	> "$LEADERBOARD"/leaderboard.js
+# So that the website can read the data.
+chmod o+r "$LEADERBOARD"/leaderboard.js
 
 if [[ ! -e "$DATAROOT"/leaderboard.js ]]; then
 	mv "$LEADERBOARD"/leaderboard.js "$DATAROOT"/leaderboard.js
