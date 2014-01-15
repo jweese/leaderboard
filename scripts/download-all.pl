@@ -10,7 +10,7 @@ use List::Util qw/max/;
 use Getopt::Long;
 
 # files to look for
-my @files = qw/assignment4.txt/;
+my @files = qw/assignment0.txt/;
 
 # Due dates.  The format is (second, minute, hour, date, (month-1),
 # year).  Yes, you read that right: the month is given in months since
@@ -70,7 +70,7 @@ foreach my $assignment (@files) {
     my $url = $urls{$user} . $assignment;
 
     # download the file
-    my $rundir = "$assignment/$user";
+    my $rundir = $assignment_root . "$assignment/$user";
     system("mkdir -p $rundir") unless -d $rundir;
     my $datestr = strftime "%F-%H-%M", localtime;
     my $filename = "$assignment.$datestr";
@@ -125,17 +125,19 @@ sub score {
   }
 }
 
-recompute oracle score
-my $total = 0.0;
-open CMD, "paste assignment2.txt/*/scores | head -n 48 |" or die;
-while (my $scores = <CMD>) {
-    chomp($scores);
-    my @tokens = split(' ', $scores);
-    $total += max(@tokens);
+# recompute oracle score
+# Only if assignment2 results exist
+if (-d ($assignment_root . "assignment2.txt")) {
+	my $total = 0.0;
+	open CMD, "paste assignment2.txt/*/scores | head -n 48 |" or die;
+	while (my $scores = <CMD>) {
+		chomp($scores);
+		my @tokens = split(' ', $scores);
+		$total += max(@tokens);
+	}
+	close CMD;
+	system("echo $total > assignment2.txt/oracle/score");
 }
-close CMD;
-system("echo $total > assignment2.txt/oracle/score");
-
 
 sub score_translations {
     my ($user) = @_;
