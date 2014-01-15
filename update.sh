@@ -3,6 +3,9 @@
 LEADERBOARD=$HOME/leaderboard
 DATAROOT=$HOME/leaderboard/data
 ASSIGNMENTS="$LEADERBOARD"
+USERFILE="$LEADERBOARD"/users.txt
+
+CURR_ASSIGNMENT="${1:-0}"
 
 [[ -d "$DATAROOT" ]] || mkdir -p "$DATAROOT"
 if [[ ! -d "$DATAROOT" ]]; then
@@ -11,9 +14,13 @@ if [[ ! -d "$DATAROOT" ]]; then
 fi
 
 "$LEADERBOARD"/scripts/download-all.pl \
-	--users "$LEADERBOARD"/users.txt \
+	--users "$USERFILE" \
 	--root "$ASSIGNMENTS"
-"$LEADERBOARD"/scripts/build-table.pl > "$LEADERBOARD"/leaderboard.js
+"$LEADERBOARD"/scripts/build-table.pl \
+	--users "$USERFILE" \
+	--root "$ASSIGNMENTS" \
+	--assignment "$CURR_ASSIGNMENT" \
+	> "$LEADERBOARD"/leaderboard.js
 
 if [[ ! -e "$DATAROOT"/leaderboard.js ]]; then
 	mv "$LEADERBOARD"/leaderboard.js "$DATAROOT"/leaderboard.js
