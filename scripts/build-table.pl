@@ -4,9 +4,18 @@ use strict;
 use warnings;
 use POSIX qw/strftime/;
 use sort 'stable';
+use Getopt::Long;
 
 # the current assignment number
-my $assNo = 4;
+my $assNo = 0;
+my $users;
+my $assignment_root;
+
+GetOptions(
+	'assignment=i' => \$assNo,
+	'users=s' => \$users,
+	'root=s' => \$assignment_root);
+$assignment_root .= "/" unless $assignment_root =~ /\/$/;
 
 # files to look for
 my %urls;
@@ -30,12 +39,14 @@ my %sort_direction = (
 );
   
 # read in the valid users
-open READ, "users.txt" or die;
-while (my $line = <READ>) {
-    next unless $. >= 3;
-    chomp($line);
-    my @tokens = split(/\|/, $line);
-    my (undef,$name,$email,$handle,$url) = @tokens;
+open READ, $users or die "could not open users file $users";
+while (<READ>) {
+    chomp;
+	s/#.*//;
+	s/^\s*$//;
+	next if /^$/;
+    my @tokens = split /\t/;
+    my ($name,$email,$handle,$url) = @tokens;
     $handle =~ s/ //g;
     $valid_users{$handle} = 1;
 }
@@ -44,7 +55,7 @@ close(READ);
 # read in the data points for each user and assignment
 foreach my $assignment (0,1,2,3,4) {
     foreach my $user (keys %valid_users) {
-	my $file = "assignment$assignment.txt/$user";
+	my $file = "$assignment_root" . "assignment$assignment.txt/$user";
 	if (-e "$file/score") {
 	    chomp(my $score = `cat $file/score`);
 	    $users{$user}[$assignment] = $score;
